@@ -1,0 +1,68 @@
+#Creating tables, loading data and querying data
+import ibm_db
+#Place the values using DB2 credentials
+dsn_driver = "{IBM DB2 ODBC DRIVER}"
+dsn_database = "bludb"            
+dsn_hostname = "b70af05b-76e4-4bca-a1f5-23dbb4c6a74e.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud"           
+dsn_port = "32716"                   
+dsn_protocol = "TCPIP"            
+dsn_uid = "xbs94712"                 
+dsn_pwd = "4rShY6hBZSQwDUII"                 
+dsn_security = "SSL"             
+
+#Create database connection
+
+dsn = (
+    "DRIVER={0};"
+    "DATABASE={1};"
+    "HOSTNAME={2};"
+    "PORT={3};"
+    "PROTOCOL={4};"
+    "UID={5};"
+    "PWD={6};"
+    "SECURITY={7};").format(dsn_driver, dsn_database, dsn_hostname, dsn_port, dsn_protocol, dsn_uid, dsn_pwd,dsn_security)
+
+try:
+    conn = ibm_db.connect(dsn, "", "")
+    print ("Connected to database: ", dsn_database, "as user: ", dsn_uid, "on host: ", dsn_hostname)
+
+except:
+    print ("Unable to connect: ", ibm_db.conn_errormsg() )
+
+#Lets first drop the table INSTRUCTOR in case it exists from a previous attempt
+dropQuery = "drop table INSTRUCTOR"
+
+#Now execute the drop statment, it will make a connection to th db
+#db.exec_immediate is the function of ibm_db API
+dropStmt = ibm_db.exec_immediate(conn, dropQuery)
+
+#Construct the Create Table DDL statement 
+createQuery = "create table INSTRUCTOR(id INTEGER PRIMARY KEY NOT NULL, FNAME VARCHAR(20), LNAME VARCHAR(20), CITY VARCHAR(20), CCODE CHAR(2))"
+
+#execute the statement
+createStmt = ibm_db.exec_immediate(conn, createQuery)
+
+#Insert rows of data
+insertQuery2 = "INSERT INTO INSTRUCTOR VALUES "( 1,'Rav','Ahuja','Toronto', 'CA') ,(2, 'RAUL','Chong', 'Markham','CA'), (3, 'Hima','Vasudevan','Chicago','US')"
+
+#execute the statement
+insertStmt2 = ibm_db.exec_immediate(conn, insertQuery2)
+
+#Retrieve data into Pandas
+import pandas
+import ibm_db_dbi
+
+#connection for pandas
+pconn = ibm_db_dbi.Connection(conn)
+
+#query statement to retrieve all rows in INSTRUCTOR table
+selectQuery = "select * from INSTRUCTOR"
+
+#retrieve the query results into a pandas dataframe
+pdf = pandas.read_sql(selectQuery, pconn)
+
+#print the entire data frame
+pdf
+
+#Close the connection
+ibm_db.close(conn)
