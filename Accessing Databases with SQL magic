@@ -1,0 +1,55 @@
+%load_ext sql
+#Db 2 credentials
+%sql ibm_db_sa://xbs94712:4rShY6hBZSQwDUII@b70af05b-76e4-4bca-a1f5-23dbb4c6a74e.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud:32716/BLUDB?security=SSL
+
+#Use %%sql on top of the cell to indicate the entire cell to be treated as sql
+
+%%sql
+CREATE TABLE INTERNATIONAL_STUDENT_TEST_SCORES (
+	country VARCHAR(50),
+	first_name VARCHAR(50),
+	last_name VARCHAR(50),
+	test_score INT
+);
+INSERT INTO INTERNATIONAL_STUDENT_TEST_SCORES (country, first_name, last_name, test_score)
+VALUES
+('United States', 'Marshall', 'Bernadot', 54),
+('Ghana', 'Celinda', 'Malkin', 51),
+('Ukraine', 'Guillermo', 'Furze', 53),
+('Greece', 'Aharon', 'Tunnow', 48),
+('Russia', 'Bail', 'Goodwin', 46),
+('Poland', 'Cole', 'Winteringham', 49),
+('Sweden', 'Emlyn', 'Erricker', 55),
+('Russia', 'Cathee', 'Sivewright', 49),
+('China', 'Barny', 'Ingerson', 57),
+('Uganda', 'Sharla', 'Papaccio', 55),
+('China', 'Stella', 'Youens', 51),
+('Poland', 'Julio', 'Buesden', 48),
+('United States', 'Tiffie', 'Cosely', 58),
+('Poland', 'Auroora', 'Stiffell', 45),
+('China', 'Clarita', 'Huet', 52),
+('Poland', 'Shannon', 'Goulden', 45),
+('Philippines', 'Emylee', 'Privost', 50),
+('France', 'Madelina', 'Burk', 49),
+('China', 'Saunderson', 'Root', 58),
+('Indonesia', 'Bo', 'Waring', 55),
+('China', 'Hollis', 'Domotor', 45),
+
+# Use python variable in SQL statement
+Country =  'Canada'
+%sql SELECT * from INTERNATIONAL_STUDENT_TEST_SCORE WHERE Country = :country
+
+#Plot a bar graph
+
+dataframe = test_score_distribution.DataFrame()
+%matplotlib inline
+import seaborn
+plot = seaborn.barplot(x='Test Score',y='Frequency', data=dataframe)
+
+
+
+
+
+
+
+
