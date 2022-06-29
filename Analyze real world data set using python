@@ -1,0 +1,27 @@
+#Connect to the database
+%load_ext sql
+#Use credentials from the db2 database
+%sql ibm_db_sa://xbs94712:4rShY6hBZSQwDUII@b70af05b-76e4-4bca-a1f5-23dbb4c6a74e.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud:32716/BLUDB?security=SSL4
+#Store the data set in the table
+import pandas
+chicago_socioeconomic_data = pandas.read_csv('https://data.cityofchicago.org/resource/jcxq-k9xf.csv')
+#Use persist to write data from pandas to table
+%sql PERSIST chicago_socioeconomic_dat
+#Total rows in a data set
+%%sql
+SELECT COUNT(*) as abc 
+FROM chicago_socioeconomic_data ;
+#How many community areas in Chicago have a hardship index greater than 50.0?
+%%sql
+SELECT count(*) FROM chicago_socioeconomic_data Where hadship_index > 50.0;
+#Which community area which has the highest hardship index?
+
+%sql SELECT community_area_name from chicago_socioeconomic_data Where hardship_index= (SELECT max(hardship_index) from chicago_socioeconomic_data)
+
+#Create a scatter plot using the variables per_capita_income_ and hardship_index. Explain the correlation between the two variables
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns
+
+income_vs_hardship = %sql SELECT per_capita_income_, hardship_index FROM chicago_socioeconomic_data;
+plot =sns.jointplot(x='per_capita_income_',y='hardship_index',data= income_vs_hardship.DataFrame())
